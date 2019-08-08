@@ -45,10 +45,10 @@ class TestFunctionRunner(BaseFunctionRunnerTestCase):
         self.assertIsNone(self.frunner.app)
 
     def test__call(self):
-        self.assertIs(self.frunner(), self.dummy_func())
+        self.assertIs(self.frunner(object()), self.dummy_func())
 
     def test_deserialize_args(self):
-        self.frunner()
+        self.frunner(object())
         result = self.frunner.deserialize_args()
         self.assertEqual(result[0], self.args)
         self.assertEqual(result[1], self.kwargs)
