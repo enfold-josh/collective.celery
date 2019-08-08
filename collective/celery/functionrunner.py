@@ -61,7 +61,7 @@ class FunctionRunner(object):
         # run the task
         return self.func(*args, **kw)
 
-    def __call__(self):
+    def __call__(self, task):
         celery = getCelery()
         if celery.conf.task_always_eager:
             self.eager = True
@@ -83,7 +83,7 @@ class FunctionRunner(object):
             except ConflictError as e:
                 # On ZODB conflicts, retry using celery's mechanism
                 transaction.abort()
-                raise Retry(exc=e)
+                raise task.retry(countdown=10, max_retries=10)
             except Exception:
                 logger.warn('Error running task: %s' % traceback.format_exc())
                 transaction.abort()

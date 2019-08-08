@@ -7,6 +7,9 @@ Changelog
 - Allow tasks to be retried.
   [enfold_josh]
 
+- Fix retry on ConflictError.
+  [enfold_josh]
+
 
 1.1.4 (2018-12-06)
 ------------------

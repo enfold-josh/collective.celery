@@ -30,20 +30,20 @@ class _task(object):
 
     def __call__(self, **task_kw):
         def decorator(func):
-            def new_func(*args, **kw):
+            def new_func(self, *args, **kw):
                 runner = AuthorizedFunctionRunner(func, new_func, args, kw, task_kw)  # noqa
-                return runner()
+                return runner(self)
             new_func.__name__ = func.__name__
-            return getCelery().task(base=AfterCommitTask, **task_kw)(new_func)
+            return getCelery().task(base=AfterCommitTask, bind=True, **task_kw)(new_func)
         return decorator
 
     def as_admin(self, **task_kw):
         def decorator(func):
-            def new_func(*args, **kw):
+            def new_func(self, *args, **kw):
                 runner = AdminFunctionRunner(func, new_func, args, kw, task_kw)
-                return runner()
+                return runner(self)
             new_func.__name__ = func.__name__
-            return getCelery().task(base=AfterCommitTask, **task_kw)(new_func)
+            return getCelery().task(base=AfterCommitTask, bind=True, **task_kw)(new_func)
         return decorator
 
 task = _task()
