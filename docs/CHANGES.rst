@@ -10,6 +10,9 @@ Changelog
 - Fix retry on ConflictError.
   [enfold_josh]
 
+- Support bind keyword argument for decorators.
+  [enfold_josh]
+
 
 1.1.4 (2018-12-06)
 ------------------

@@ -24,7 +24,7 @@ class FunctionRunner(object):
     app = None
     eager = False
 
-    def __init__(self, func, new_func, orig_args, orig_kw, task_kw):
+    def __init__(self, func, new_func, orig_args, orig_kw, task_kw, bind):
         self.orig_args = orig_args
         self.orig_kw = orig_kw
         self.func = func
@@ -33,6 +33,7 @@ class FunctionRunner(object):
         self.site = None
         self.app = None
         self.task_kw = task_kw
+        self.bind = bind
 
     def deserialize_args(self):
         args = []
@@ -47,7 +48,7 @@ class FunctionRunner(object):
     def authorize(self):
         pass
 
-    def _run(self):
+    def _run(self, task):
         self.userid = self.orig_kw.pop('authorized_userid')
         site_path = self.orig_kw.pop('site_path')
         try:
@@ -59,6 +60,9 @@ class FunctionRunner(object):
         self.authorize()
         args, kw = self.deserialize_args()  # noqa
         # run the task
+        bind = self.bind
+        if bind:
+            return self.func(task, *args, **kw)
         return self.func(*args, **kw)
 
     def __call__(self, task):
@@ -67,7 +71,7 @@ class FunctionRunner(object):
             self.eager = True
             # dive out of setup, this is not run in a celery task runner
             self.app = getApp()
-            return self._run()
+            return self._run(task)
 
         self.app = makerequest(getApp())
         self.app.REQUEST['PARENTS'] = [self.app]
@@ -76,14 +80,14 @@ class FunctionRunner(object):
         transaction.begin()
         try:
             try:
-                result = self._run()
+                result = self._run(task)
                 # commit transaction
                 transaction.commit()
                 return result
             except ConflictError as e:
                 # On ZODB conflicts, retry using celery's mechanism
                 transaction.abort()
-                raise task.retry(countdown=10, max_retries=10)
+                raise task.retry(countdown=10)
             except Exception:
                 logger.warn('Error running task: %s' % traceback.format_exc())
                 transaction.abort()

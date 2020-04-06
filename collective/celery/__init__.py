@@ -28,23 +28,32 @@ class _task(object):
     ZODB conflict errors.
     """
 
-    def __call__(self, **task_kw):
+    def __call__(self, bind=False, **task_kw):
+        if 'max_retries' not in task_kw:
+            task_kw['max_retries'] = 10
+
         def decorator(func):
             def new_func(self, *args, **kw):
-                runner = AuthorizedFunctionRunner(func, new_func, args, kw, task_kw)  # noqa
+                runner = AuthorizedFunctionRunner(func, new_func, args, kw,
+                                                  task_kw, bind)  # noqa
                 return runner(self)
             new_func.__name__ = func.__name__
             return getCelery().task(base=AfterCommitTask, bind=True, **task_kw)(new_func)
         return decorator
 
-    def as_admin(self, **task_kw):
+    def as_admin(self, bind=False, **task_kw):
+        if 'max_retries' not in task_kw:
+            task_kw['max_retries'] = 10
+
         def decorator(func):
             def new_func(self, *args, **kw):
-                runner = AdminFunctionRunner(func, new_func, args, kw, task_kw)
+                runner = AdminFunctionRunner(func, new_func, args, kw, task_kw,
+                                             bind)
                 return runner(self)
             new_func.__name__ = func.__name__
             return getCelery().task(base=AfterCommitTask, bind=True, **task_kw)(new_func)
         return decorator
+
 
 task = _task()
 task.__doc__ = """This decorator "wraps" the celery task decorator
