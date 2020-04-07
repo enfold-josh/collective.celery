@@ -21,13 +21,15 @@ class BaseFunctionRunnerTestCase(BaseTestCase):
             'authorized_userid': SITE_OWNER_NAME,
             'site_path': '/plone',
         }
-        self.task_kwargs={'baz': 1}
+        self.task_kwargs = {'baz': 1}
+        self.bind = False
         self.frunner = FunctionRunner(
             func=self.dummy_func,
             new_func=self.dummy_func,
             orig_args=self.args,
             orig_kw=self.kwargs,
             task_kw=self.task_kwargs,
+            bind=self.bind
         )
 
 
@@ -67,6 +69,7 @@ class TestAuthorizedFunctionRunner(BaseFunctionRunnerTestCase):
             orig_args=self.args,
             orig_kw=self.kwargs,
             task_kw=self.task_kwargs,
+            bind=self.bind,
         )
 
     def test_authorize(self):
@@ -90,6 +93,7 @@ class TestAdminFunctionRunner(BaseFunctionRunnerTestCase):
             orig_args=self.args,
             orig_kw=self.kwargs,
             task_kw=self.task_kwargs,
+            bind=self.bind,
         )
 
     def test_authorize(self):
