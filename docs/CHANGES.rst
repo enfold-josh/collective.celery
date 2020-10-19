@@ -16,6 +16,9 @@ Changelog
 - Get script working with Zope 4
   [enfold_josh]
 
+- Get the user directly from acl_users
+  [enfold_josh]
+
 
 1.1.4 (2018-12-06)
 ------------------
