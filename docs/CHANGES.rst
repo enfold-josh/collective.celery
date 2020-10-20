@@ -19,6 +19,9 @@ Changelog
 - Get the user directly from acl_users
   [enfold_josh]
 
+- Use the system user if admin can't be found.
+  [enfold_josh]
+
 
 1.1.4 (2018-12-06)
 ------------------

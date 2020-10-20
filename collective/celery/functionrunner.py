@@ -1,6 +1,7 @@
 import traceback
 
 import transaction
+from AccessControl import users
 from AccessControl.SecurityManagement import (newSecurityManager,
                                               noSecurityManager)
 from celery.exceptions import Retry
@@ -134,3 +135,5 @@ class AdminFunctionRunner(AuthorizedFunctionRunner):
         user = acl_users.getUserById('admin')
         if user:
             newSecurityManager(None, user)
+        else:
+            newSecurityManager(None, users.system)
