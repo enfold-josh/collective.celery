@@ -116,6 +116,8 @@ class AuthorizedFunctionRunner(FunctionRunner):
         # and login() don't do everything.
         acl_users = api.portal.get_tool('acl_users')
         user = acl_users.getUserById(self.userid)
+        if user is None:
+            user = self.app.acl_users.getUserById(self.userid)
         newSecurityManager(None, user)
 
 

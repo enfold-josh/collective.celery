@@ -22,6 +22,10 @@ Changelog
 - Use the system user if admin can't be found.
   [enfold_josh]
 
+- Get the user from the acl_users in the zope application root if it is not
+  found in the portal acl_users.
+  [enfold_josh]
+
 
 1.1.4 (2018-12-06)
 ------------------
