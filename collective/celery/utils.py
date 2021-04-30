@@ -18,6 +18,8 @@ except ImportError:
 
 _local = threading.local()
 
+init_lock = threading.Lock()
+
 
 def _bool(term, table={"false": False, "no": False, "0": False,
                        "true": True, "yes": True, "1": True}):
@@ -109,11 +111,12 @@ def getApp(*args, **kwargs):
     except AttributeError:
         pass
     if Zope2.bobo_application is None:
-        orig_argv = sys.argv
-        sys.argv = ['']
-        res = Zope2.app(*args, **kwargs)
-        sys.argv = orig_argv
-        return res
+        with init_lock:
+            orig_argv = sys.argv
+            sys.argv = ['']
+            res = Zope2.app(*args, **kwargs)
+            sys.argv = orig_argv
+            return res
     # should set bobo_application
     # man, freaking zope2 is weird
     return Zope2.bobo_application(*args, **kwargs)
