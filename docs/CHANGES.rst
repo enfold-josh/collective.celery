@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.1.5 (unreleased)
+1.1.5 (2021-06-23)
 ------------------
 
 - Allow tasks to be retried.
