@@ -81,6 +81,8 @@ class FunctionRunner(object):
         transaction.begin()
         try:
             try:
+                logger.info('Starting task with args: %s kwargs: %s' % (
+                    self.orig_args, self.orig_kw))
                 result = self._run(task)
                 # commit transaction
                 transaction.commit()
@@ -88,6 +90,7 @@ class FunctionRunner(object):
             except ConflictError as e:
                 # On ZODB conflicts, retry using celery's mechanism
                 transaction.abort()
+                logger.warning('Retrying task after ConflictError.')
                 raise task.retry(countdown=10)
             except Exception:
                 logger.warn('Error running task: %s' % traceback.format_exc())

@@ -4,7 +4,8 @@ Changelog
 1.1.6 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Add more logging to function runner.
+  [enfold_josh]
 
 
 1.1.5 (2021-06-23)
