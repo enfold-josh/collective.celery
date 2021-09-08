@@ -7,6 +7,9 @@ Changelog
 - Add more logging to function runner.
   [enfold_josh]
 
+- Use environment variables to set base URL.
+  [enfold_josh]
+
 
 1.1.5 (2021-06-23)
 ------------------

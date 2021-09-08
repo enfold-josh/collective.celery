@@ -1,10 +1,10 @@
-import traceback
 
+import os
+import traceback
 import transaction
 from AccessControl import users
 from AccessControl.SecurityManagement import (newSecurityManager,
                                               noSecurityManager)
-from celery.exceptions import Retry
 from celery.utils.log import get_task_logger
 from collective.celery.base_task import AfterCommitTask
 from collective.celery.utils import _deserialize_arg, getApp, getCelery
@@ -74,7 +74,12 @@ class FunctionRunner(object):
             self.app = getApp()
             return self._run(task)
 
-        self.app = makerequest(getApp())
+        environ = {
+            'SERVER_NAME': os.getenv('SERVER_NAME', 'foo'),
+            'SERVER_PORT': os.getenv('SERVER_PORT', '80'),
+            'HTTPS': os.getenv('HTTPS', False)
+        }
+        self.app = makerequest(getApp(), environ=environ)
         self.app.REQUEST['PARENTS'] = [self.app]
         setRequest(self.app.REQUEST)
 
