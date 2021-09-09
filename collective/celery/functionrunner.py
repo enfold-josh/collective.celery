@@ -51,13 +51,6 @@ class FunctionRunner(object):
 
     def _run(self, task):
         self.userid = self.orig_kw.pop('authorized_userid')
-        site_path = self.orig_kw.pop('site_path')
-        try:
-            self.site = api.portal.get()
-        except api.exc.CannotGetPortalError:
-            pass
-        if self.site is None:
-            self.site = self.app.unrestrictedTraverse(site_path)
         self.authorize()
         args, kw = self.deserialize_args()  # noqa
         # run the task
@@ -72,16 +65,22 @@ class FunctionRunner(object):
             self.eager = True
             # dive out of setup, this is not run in a celery task runner
             self.app = getApp()
+            self.site = api.portal.get()
             return self._run(task)
-
-        environ = {
-            'SERVER_NAME': os.getenv('SERVER_NAME', 'foo'),
-            'SERVER_PORT': os.getenv('SERVER_PORT', '80'),
-            'HTTPS': os.getenv('HTTPS', False)
-        }
-        self.app = makerequest(getApp(), environ=environ)
-        self.app.REQUEST['PARENTS'] = [self.app]
-        setRequest(self.app.REQUEST)
+        else:
+            environ = {
+                'SERVER_NAME': os.getenv('SERVER_NAME', 'foo'),
+                'SERVER_PORT': os.getenv('SERVER_PORT', '80'),
+                'HTTPS': os.getenv('HTTPS', False)
+            }
+            self.app = app = makerequest(getApp(), environ=environ)
+            request = app.REQUEST
+            site_path = self.orig_kw.pop('site_path')
+            site = app.unrestrictedTraverse(site_path)
+            request['PARENTS'] = [app, site]
+            request.setVirtualRoot([])
+            setRequest(request)
+            self.site = site
 
         transaction.begin()
         try:
