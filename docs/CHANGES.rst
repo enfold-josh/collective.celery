@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.1.6 (unreleased)
+1.1.6 (2021-09-10)
 ------------------
 
 - Add more logging to function runner.
