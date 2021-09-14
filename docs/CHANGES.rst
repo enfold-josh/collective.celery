@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.1.7 (unreleased)
+1.1.7 (2021-09-14)
 ------------------
 
 - Use a single environment variable to set base URL.
