@@ -4,7 +4,8 @@ Changelog
 1.1.7 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Use a single environment variable to set base URL.
+  [enfold_josh]
 
 
 1.1.6 (2021-09-10)

@@ -69,9 +69,7 @@ class FunctionRunner(object):
             return self._run(task)
         else:
             environ = {
-                'SERVER_NAME': os.getenv('SERVER_NAME', 'foo'),
-                'SERVER_PORT': os.getenv('SERVER_PORT', '80'),
-                'HTTPS': os.getenv('HTTPS', False)
+                'SERVER_URL': os.getenv('SERVER_URL', 'http://foo'),
             }
             self.app = app = makerequest(getApp(), environ=environ)
             request = app.REQUEST
