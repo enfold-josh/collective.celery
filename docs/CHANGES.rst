@@ -4,7 +4,8 @@ Changelog
 1.1.8 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Emit a log message when the task completes successfully.
+  [enfold_josh]
 
 
 1.1.7 (2021-09-14)
@@ -76,7 +77,7 @@ Changelog
 
 - fix use of CELERY_TASK_ALWAYS_EAGER
   [vangheem]
-  
+
 - Python 3/Plone 5.2 support
   [vangheem]
 

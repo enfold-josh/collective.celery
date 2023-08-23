@@ -88,6 +88,7 @@ class FunctionRunner(object):
                 result = self._run(task)
                 # commit transaction
                 transaction.commit()
+                logger.info('Task completed successfully.')
                 return result
             except ConflictError as e:
                 # On ZODB conflicts, retry using celery's mechanism
