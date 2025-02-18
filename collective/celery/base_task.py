@@ -8,7 +8,11 @@ from plone import api
 from transaction.interfaces import ISynchronizer
 from zope.interface import implementer
 
+import logging
 import transaction
+
+
+logger = logging.getLogger('collective.celery.base_task')
 
 
 class EagerResult(result.EagerResult):
@@ -96,8 +100,16 @@ class AfterCommitTask(Task):
         # if task is not None we are in a retry and site_path and
         # authorized_userid are already in kw
         if task is None:
-            kw['site_path'] = '/'.join(api.portal.get().getPhysicalPath())
-            kw['authorized_userid'] = api.user.get_current().getId()
+            try:
+                kw['site_path'] = '/'.join(api.portal.get().getPhysicalPath())
+            except api.exc.PloneApiError:
+                logger.exception('Unable to get portal object')
+                return
+            try:
+                logger.exception('Unable to get current user')
+                kw['authorized_userid'] = api.user.get_current().getId()
+            except api.exc.PloneApiError:
+                return
 
         without_transaction = options.pop('without_transaction', False)
 
